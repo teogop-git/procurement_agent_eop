@@ -1,0 +1,79 @@
+field_mapping:
+  "Търговец": sales_owner
+  "Отговорник обща част- координатор": coordinator
+  "Отговорник техническа част- Консултант предпродажби": presales_consultant
+  "Продуктов мениджър": product_manager
+  "Технически специалист": technical_specialist
+  "Възложител": buyer
+  "Контакти": contacts
+  "Уникален номер на поръчката в ЦАИС. Линк към поръчката в ЦАИС": eop_reference
+  "Официален вестник на ЕС - TED": ted_reference
+  "Предмет на поръчката": subject
+  "Обособени позиции": lots
+  "Кратко описание на предмета": short_description
+  "Начин на възлагане": procedure_type
+  "Прогнозна стойност (без ДДС)": estimated_value
+  "Прогнозна стойност Евро (без ДДС)": estimated_value
+  "Процедурa над 50 000 евро - PayForm": payform_required
+  "Продължителност на поръчката": contract_duration
+  "Срок за изпълнение": execution_term
+  "Срок за доставка": delivery_term
+  "Масто на доставка": delivery_place
+  "Място на доставка": delivery_place
+  "Краен срок за получаване на оферти": offer_deadline
+  "Валидност на офертата": offer_validity
+  "Отваряне на офертите": opening_date
+  "Срок за промяна": change_deadline
+  "Срок за въпроси": questions_deadline
+  "Дата на публикуване": publication_date
+  "Гаранцията за изпълнение на договора": performance_guarantee
+  "Финансиране": funding
+  "Разглеждане на оферти": offer_review
+  "Цена": award_price
+  "Техническа оценка": technical_score
+  "Методика": evaluation_methodology
+  "Информация относно използването на капацитета на други субекти": third_party_capacity
+  "Възлагане на подизпълнители в процентно изражение": subcontracting
+  "Информация относно обединение / консорциум": consortium
+  "Информация относно използването на капацитета на трети страни": third_party_capacity_alt
+  "Декларация по чл.5к / за създаване на обединение / надеждност": article_5k_declaration
+  "Общ оборот": total_turnover
+  "Конкретен годишен оборот - Специфичен оборот попадащ в сферата на предмета": specific_turnover
+  "Участие в пазарна консултация": market_consultation
+  "Изпълнени дейности/услуги": similar_deliveries
+  "Екип - образователна и професионална квалификация": team_qualification
+  "Оторизации": authorizations
+  "Инструменти, съоръжения или техническо оборудване": tools_equipment
+  "Сертификат ISO Версия / обхват": iso_certificate
+  "Марка, модел, производител": brand_model_manufacturer
+  "Технически изисквания": technical_requirements
+  "Вендор": vendor
+  "Срок за реакция и условия": reaction_term
+  "Гаранционен срок и условия": warranty_terms
+  "Срок за доставка и инсталация": delivery_installation_term
+  "Сравнителна таблица": comparison_table
+  "Сертификати (CE, Energy Star, TCO…)": product_certificates
+  "Място на доставка и изпълнение": delivery_execution_place
+  "Брошури": brochures
+  "Help Desk": helpdesk
+  "Оторизация – при подаване на оферта или при подписване на договор": authorization_timing
+  "Технически проект": technical_project
+  "План-график на проекта": project_schedule
+  "Методология за изпълнение на проекта": execution_methodology
+  "Методология за управление на риска": risk_management_methodology
+  "Методология за управление на качеството": quality_management_methodology
+  "Декларация за конфиденциалност": confidentiality_declaration
+  "Декларация за задълженията за осигуровки, данъци и др.": tax_social_security_declaration
+  "Ценово предложение - образец": price_offer_template
+  "ПРИЛОЖЕНИЯ към ценовото предложение": price_offer_attachments
+  "Указания за изготвяне и подаване на офертите /копия на документи „ВО“, преводи/": offer_submission_instructions
+  "Специфични изисквания по проекто договор": draft_contract_specific_requirements
+  "Други специфични изисквания": other_specific_requirements
+  "Срок за доставка / инсталация / поддръжка": contract_delivery_support_term
+  "Срок за плащане": payment_term
+  "Авансово плащане": advance_payment
+  "Гаранция за авансово плащане": advance_payment_guarantee
+  "Гаранция за добро изпълнение": good_performance_guarantee
+  "Срок на договора": contract_term
+  "Неустойки": penalties
+  "ЕЗИК": language_requirements
