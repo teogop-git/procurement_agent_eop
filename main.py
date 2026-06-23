@@ -92,18 +92,34 @@ def run_agent():
             try:
                 sender = os.getenv("REPORT_RECIPIENT", os.getenv("EMAIL_ADDRESS", ""))
                 subject = email_data.get("subject", "ZOP Analysis")
-                # Генерирай кратко HTML summary
-                risks = [r.get("risk", "UNKNOWN") for r in analysis_results if isinstance(r, dict)]
-                tenders = [r.get("tender_id", "") for r in analysis_results if isinstance(r, dict)]
+                original_sender = email_data.get("sender_email") or email_data.get("sender", "")
+
+                # Извлечи риск и URL от структурата на analysis_results
+                rows = []
+                for r in analysis_results:
+                    if not isinstance(r, dict):
+                        continue
+                    url = r.get("procurement_url", "")
+                    tender_id = url.split("/")[-1] if url else "?"
+                    summary = r.get("analysis", {}).get("summary", {})
+                    risk = summary.get("overall_risk_level", "UNKNOWN")
+                    backend = r.get("analyzed_by", "?")
+                    confidence = summary.get("confidence_score", 0)
+                    vl = "⚠️ Да" if summary.get("vendor_lock_detected") else "Не"
+                    rows.append(f'<li><a href="{url}">Поръчка {tender_id}</a>: риск <strong>{risk}</strong> | vendor-lock: {vl} | модел: {backend} | confidence: {confidence:.0%}</li>')
+
+                rows_html = "\n".join(rows) if rows else "<li>Няма резултати</li>"
+
                 html_body = f"""<html><body>
-                <h2>ZOP Analysis Report</h2>
-                <p>Заявка от: {sender}</p>
-                <p>Тема: {subject}</p>
-                <p>Анализирани поръчки: {len(analysis_results)}</p>
-                <ul>{"".join(f"<li>Поръчка {t}: риск {r}</li>" for t, r in zip(tenders, risks))}</ul>
-                <p>Пълният репорт е наличен локално: {final_path}</p>
-                <p><i>Анализът е автоматичен. За финално решение е нужна експертна проверка.</i></p>
-                </body></html>"""
+<h2>ZOP Analysis Report</h2>
+<p><b>Заявка от:</b> {original_sender}</p>
+<p><b>Тема:</b> {subject}</p>
+<p><b>Дата на анализ:</b> {email_data.get("received_time", "")}</p>
+<p><b>Анализирани поръчки:</b> {len(analysis_results)}</p>
+<ul>{rows_html}</ul>
+<p><b>Пълният репорт (DOCX):</b> {final_path}</p>
+<p><i>Анализът е автоматичен. За финално решение по участие/оспорване е нужна експертна проверка.</i></p>
+</body></html>"""
                 monitor.send_html_reply(
                     to_email=sender,
                     subject=subject,
