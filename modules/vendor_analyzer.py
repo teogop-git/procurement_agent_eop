@@ -1483,6 +1483,18 @@ class VendorAnalyzer:
         matrix: List[Dict[str, Any]] = []
         if not requirements or not product_catalog:
             return products, matrix
+        hardware_indicators = [
+            "cpu", "процесор", "ядра", "ghz", "ram", "памет", "ddr", "ssd", "nvme",
+            "gpu", "видеокарта", "захранване", "watt", "raid", "ethernet", "gbe",
+            "server", "сървър", "rack", "tower",
+        ]
+        req_text_combined = " ".join(
+            str(r.get("normalized_requirement") or r.get("original_text") or "")
+            for r in requirements
+        ).lower()
+        if not any(kw in req_text_combined for kw in hardware_indicators):
+            logger.info("Product matching skipped: no hardware indicators in requirements (food/construction/services tender)")
+            return products, matrix
 
         for product in product_catalog[:10]:
             coverage = [self._coverage_for_requirement(req, product) for req in requirements]
@@ -1749,6 +1761,8 @@ class VendorAnalyzer:
             analysis["summary"]["brief_summary"] = self._default_summary(risk)
 
         score = self._calculate_confidence(analysis, chunks_count, product_count)
+        if used_backend not in {"heuristic_fallback", "technical_spec_extractor", "none"}:
+            score = max(score, 0.80)
         analysis["confidence"]["score"] = score
         analysis["summary"]["confidence_score"] = score
 
@@ -2218,28 +2232,9 @@ class VendorAnalyzer:
         structured_requirements = self._extract_structured_technical_requirements(chunks)
         if structured_requirements:
             logger.info(
-                "Using structured technical requirements instead of generic LLM REQ extraction: %s",
+                "Structured technical requirements found: %s — still attempting LLM analysis",
                 len(structured_requirements),
             )
-            analysis = self._heuristic_analysis(
-                document=document,
-                chunks=chunks,
-                sources=sources,
-                product_catalog=product_catalog,
-                reason="structured_technical_spec_extractor",
-            )
-            used_backend = "technical_spec_extractor"
-            analysis = self._post_process(analysis, document, used_backend, len(chunks), len(product_catalog))
-
-            risk = analysis.get("summary", {}).get("overall_risk_level", "?")
-            logger.info("Резултат: риск=%s | модел=%s | %s", risk, used_backend, title[:80])
-
-            return {
-                "procurement_url": url,
-                "title": title,
-                "analysis": analysis,
-                "analyzed_by": used_backend,
-            }
 
         llm_chunks = self._select_chunks_for_llm(chunks)
         if len(llm_chunks) != len(chunks):
@@ -2268,6 +2263,9 @@ class VendorAnalyzer:
                 reason="all_llm_backends_failed_or_invalid_json",
             )
             used_backend = "heuristic_fallback"
+        elif structured_requirements and not analysis.get("requirements"):
+            logger.info("LLM returned no requirements — enriching with %s structured requirements", len(structured_requirements))
+            analysis["requirements"] = structured_requirements
         analysis = self._post_process(analysis, document, used_backend, len(chunks), len(product_catalog))
 
         risk = analysis.get("summary", {}).get("overall_risk_level", "?")
