@@ -888,10 +888,15 @@ class VendorAnalyzer:
         if has_technical_docs:
             ordered_docs = [doc for doc in ordered_docs if doc_priority(doc) < 90]
 
+        seen_content_hashes: set = set()
         for doc in ordered_docs:
             for page in doc.get("pages", []):
                 page_text = page.get("text") or ""
                 for idx, part in enumerate(self._split_text(page_text, self.max_chunk_chars), start=1):
+                    content_hash = hash(part.strip())
+                    if content_hash in seen_content_hashes:
+                        continue
+                    seen_content_hashes.add(content_hash)
                     chunks.append(
                         {
                             "document_name": doc.get("document_name", "unknown"),
