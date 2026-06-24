@@ -2136,7 +2136,7 @@ class VendorAnalyzer:
         Select only the most relevant technical chunks for LLM analysis.
         This prevents local Ollama from receiving huge prompts and timing out.
         """
-        max_chunks = int(os.getenv("ZOP_MAX_LLM_CHUNKS", "6"))
+        max_chunks = int(os.getenv("ZOP_MAX_LLM_CHUNKS", "12"))
         max_chars = int(os.getenv("ZOP_MAX_CHUNK_CHARS", "2500"))
 
         def score(chunk: Dict[str, Any]) -> int:
@@ -2157,6 +2157,10 @@ class VendorAnalyzer:
                 s += 40
             if "спецификация" in name:
                 s += 40
+            if "позиция" in name and "спецификац" in name:
+                s += 80
+            if "приложение" in name and ("спецификац" in name or "техн" in name):
+                s += 60
 
             technical_terms = [
                 "процесор", "cpu", "ядра", "ghz", "ram", "памет", "ddr4", "ddr5",
@@ -2164,6 +2168,10 @@ class VendorAnalyzer:
                 "nvidia", "rtx", "захранване", "psu", "watt", "ват", "raid",
                 "ethernet", "gbe", "sfp", "lto", "лента", "слот", "гаранция",
                 "поддръжка", "сертификат", "стандарт", "pfc", "power factor",
+                "монитор", "дисплей", "принтер", "скенер", "мфу", "таблет",
+                "лаптоп", "преносим", "настолен", "сървър", "мрежов", "wi-fi",
+                "bluetooth", "usb", "hdmi", "displayport", "резолюция", "diagonal",
+                "диагонал", "батерия", "акумулатор", "клавиатура", "мишка",
             ]
             s += sum(3 for term in technical_terms if term in text_value)
 
